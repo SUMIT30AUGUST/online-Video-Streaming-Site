@@ -1,5 +1,6 @@
 const userVideo= document.getElementById('user-video')
 const startButton = document.getElementById('start-btn');
+const socket=io();
 
 const state = {
        media:null 
@@ -16,16 +17,18 @@ startButton.addEventListener('click',()=>{
    })
    
    
-   mediaRecorder.ondataavailable = (ev)=>{
-       console.log('Binary Stream Available', ev.data)
+   mediaRecorder.ondataavailable = (e)=>{
+      // console.log('Binary Stream Available', e.data)
+      socket.emit('binaryStream',e.data)
    }
    
 
-   /*
+   /* 
     MediaRecorder will capture and encode chunks of media data
     from the stream every 25 milliseconds.
    */
    mediaRecorder.start(25)
+
 })
 
 window.addEventListener('load',async(e)=>{
@@ -39,7 +42,7 @@ window.addEventListener('load',async(e)=>{
        //users own media
        userVideo.srcObject=media
 
-       
+
        //state.media is a mediaStream parameter passed to 
        //MediaRecorder function 
        state.media=media
